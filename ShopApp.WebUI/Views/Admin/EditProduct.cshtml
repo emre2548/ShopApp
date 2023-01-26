@@ -1,0 +1,91 @@
+﻿@model ProductModel
+@{
+    ViewData["Title"] = "EditProduct";
+}
+
+@section Scripts
+{
+    <script src="~/modules/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js"></script>
+    <script src="~/modules/ckeditor/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace("editor");
+    </script>
+    <script>
+        $.validator.methods.range = function (value, element, param) {
+            var globalizedValue = value.replace(",", ".");
+            return this.optional(element) || (globalizedValue >= param[0] && globalizedValue <= param[1]);
+        }
+
+        $.validator.methods.number = function (value, element) {
+            return this.optional(element) || /-?(?:\d+|\d{1,3}(?:[\s\.,]\d{3})+(?:[\.,]\d+)?)$/.test(value);
+        }
+
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#fileImage").change(function (e) {
+                $("#imgPreview").show();
+                $("#imgPreview").attr("src", URL.createObjectURL(e.target.files[0]));
+            })
+        })
+    </script>
+}
+
+<h1>EditProduct</h1>
+<hr />
+<form asp-controller="Admin" asp-action="EditProduct" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="row">
+        <div class="col-md-8">
+            <input type="hidden" name="Id" value="@Model.Id" />
+            <div class="form-group-row">
+                <label asp-for="Name" class="col-md-2 col-form-label">Product Name</label>
+                <div class="col-md-9">
+                    <input asp-for="Name" value="@Model.Name" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group-row">
+                <label asp-for="ImageUrl" class="col-md-2 col-form-label">Image Url</label>
+                <div class="col-md-9">
+                    @*<input asp-for="ImageUrl" value="@Model.ImageUrl" class="form-control" />*@
+                    <input type="hidden" name="ImageUrl" value="@Model.ImageUrl" />
+                    <img src="~/img/@Model.ImageUrl" width="80px" id="imgPreview"/>
+                    <input type="file" name="file" value="" id="fileImage" />
+                </div>
+            </div>
+            <div class="form-group-row">
+                <label asp-for="Description" class="col-md-2 col-form-label">Description</label>
+                <div class="col-md-9">
+                    <textarea id="editor" asp-for="Description" value="@Model.Description" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="form-group-row">
+                <label asp-for="Price" class="col-md-2 col-form-label">Price</label>
+                <div class="col-md-9">
+                    <input asp-for="Price" value="@Model.Price" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group-row mt-2">
+                <div class="col-md-9">
+                    <button type="submit" class="btn btn-primary">Edit Product</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            @foreach (var item in (List<Category>)ViewBag.Categories)
+            {
+                <div class="form-check">
+                    <input class="form-check-input"
+                           name="categoryIds"
+                           type="checkbox"
+                           value="@item.Id"
+                           id="category@(item.Id)" @(Model.SelectedCategories.Any(i => i.Id == item.Id) ? "checked" : "")>
+                    <label class="form-check-label" for="category@(item.Id)">
+                        @item.Name
+                    </label>
+                </div>
+            }
+        </div>
+    </div>
+</form>

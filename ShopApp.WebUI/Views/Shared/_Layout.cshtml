@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link href="/modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/style.css" rel="stylesheet" />
+    <script src="https://kit.fontawesome.com/b6b5d8a538.js" crossorigin="anonymous"></script>
+
+</head>
+<body>
+    <partial name="_navbar">
+        @*algıladığında yeşile döner bunuda biz viewimports ve viewstart oluşturduk*@
+        <div class="container pt-100 mb-5">
+            @if (TempData["message"] != null)
+            {
+                <partial name="_resultmessage" model="@(TempData.Get<ResultMessage>("message"))" />
+            }
+            @RenderBody()
+        </div>
+
+        <script src="/modules/jquery/dist/jquery.js"></script>
+        <script src="/modules/bootstrap/dist/js/bootstrap.js"></script>
+        @* açılır kapanır işlemleri için *@
+        <script src="https://cdn.jsdelivr.net/npm/@@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+
+        @RenderSection("Scripts", false)
+
+</body>
+</html>
